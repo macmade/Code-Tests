@@ -1,0 +1,847 @@
+%!PS
+
+% $Id: Miscellaneous.ps 57 2009-01-30 05:52:42Z macmade $
+
+%% Title:   PostScript examples
+%% Author:  Jean-David Gadina <info@macmade.net>
+%% Date:    2 May 2007
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 1) PROCEDURES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%===============================================================================
+% Converts a number in inches to points
+%  
+% Stack:
+%   1)  Number  The number of inches
+%===============================================================================
+/inch {
+    
+    72 mul
+    
+} def
+
+%===============================================================================
+% Converts a number in centimeters to points
+%  
+% Stack:
+%   1)  Number  The number of centimeters
+%===============================================================================
+/cm {
+    
+    0.39370079 mul inch
+    
+} def
+
+%===============================================================================
+% Converts a number in millimeters to points
+%  
+% Stack:
+%   1)  Number  The number of millimeters
+%===============================================================================
+/mm {
+    
+    0.039370079 mul inch
+    
+} def
+
+%===============================================================================
+% Change a font's encoding
+%  
+% Stack:
+%   1)  The new encoding
+%   2)  The new font
+%   3)  The base font
+%===============================================================================
+/reEncodeFont {
+    
+    % Re-encode dictionnary
+    /reEncodeDict 5 dict def
+
+    % Start using re-encode dictionnary
+    reEncodeDict begin
+    
+    % Store stack variables
+    /newEncoding exch def
+    /newFontName exch def
+    /baseFontName exch def
+    
+    % Store the base font's dictionnary
+    /baseFontDict baseFontName findfont def
+    
+    % Create a copy of the base font directory for the new one
+    /newFont baseFontDict maxlength dict def
+    
+    % Process each entry of the base font directory
+    baseFontDict {
+        
+        % Detect font ID and encoding fields
+        exch dup /FID ne dup /Encoding ne and {
+            
+            % Put entry in the new font
+            exch newFont 3 1 roll put
+            
+        } {
+            
+            % Remove fields from the stack
+            pop pop
+            
+        } ifelse
+        
+    } forall
+    
+    % Install the new name and new encoding in the new font
+    newFont /FontName newFontName put
+    newFont /Encoding newEncoding put
+    
+    % Define the new font
+    newFontName newFont definefont pop
+    
+    end
+    
+} def
+
+%===============================================================================
+% Resets the coordinate system to the PostScript defaults
+%  
+% Stack:
+%   1)  Number  The amount of the Y translation
+%   2)  Number  The amount of the X translation
+%===============================================================================
+/resetCoordinates {
+    
+    % Store X and Y variables
+    /resetY exch def
+    /resetX exch def
+    
+    % Reset the coordinate system and go to the origin
+    resetX neg resetY neg translate
+    0 0 moveto
+    
+} def
+
+%===============================================================================
+% Creates a box
+%  
+% Stack:
+%   1)  Number  The size of the box (in points)
+%   2)  Number  The Y position of the box
+%   3)  Number  The X position of the box
+%   4)  Number  The gray fill
+%   5)  Number  The rotation ammount
+%===============================================================================
+/box {
+    
+    % Store the requested box size
+    /boxSize exch def
+    
+    % Half the box size
+    /boxHalfSize boxSize 2 div def
+    
+    % X and Y positions
+    /boxYpos exch def
+    /boxXpos exch def
+    
+    % Creates a new path and position to the requested point
+    newpath
+    boxYpos boxXpos moveto
+    
+    % Store the box color
+    /boxColor exch def
+    
+    % Rotation
+    /boxRotate exch def
+    boxRotate rotate
+    
+    % Relative move
+    boxHalfSize neg boxHalfSize neg rmoveto
+    
+    % Trace box lines
+    boxSize 0  rlineto
+    0 boxSize rlineto
+    boxSize neg 0 rlineto
+    
+    % Close path
+    closepath
+    
+    % Fill the box
+    gsave
+    boxColor setgray fill
+    grestore
+    
+    % Trace the line
+    1 setlinewidth
+    boxColor 0.1 sub setgray
+    stroke
+    
+    % Reset rotation
+    boxRotate neg rotate
+    
+} def
+
+%===============================================================================
+% Creates a set of boxes
+%  
+% Stack:
+%   1)  Number  The size of the boxes
+%   2)  Integer The number of boxes to display
+%   3)  Number  The X offset for each box
+%   4)  Number  The Y offset for each box
+%   5)  Number  The X initial position
+%   6)  Number  The Y initial position
+%===============================================================================
+/boxes {
+    
+    gsave
+    
+    % Store the size of the boxes
+    /boxesSize exch def
+    
+    % Store the number of boxes to display
+    /boxesNumber exch def
+    
+    % Store the X and Y offset for each boxes
+    /boxesYoffset exch def
+    /boxesXoffset exch def
+    
+    % Store the X and Y coordinates for the translation
+    /boxesYtranslate exch def
+    /boxesXtranslate exch def
+    
+    % Move origin axes
+    boxesXoffset boxesNumber mul boxesXtranslate add boxesYoffset boxesNumber mul boxesYtranslate add translate
+    
+    % Translation offset
+    /boxesTranslationOffset 360 boxesNumber div 0.5 mul def
+    
+    % Creates the boxes
+    0 1 boxesNumber 1 sub {
+        
+        % Current box number
+        /boxesCurrentItem exch def
+       
+        % Current box color
+        /boxesCurrentColor 1 boxesNumber div boxesCurrentItem mul def
+        
+        % Create box
+        boxesTranslationOffset boxesCurrentItem mul 1 sub boxesCurrentColor 0 0 boxesSize box
+        
+        % Move origin
+        boxesXoffset neg boxesYoffset neg translate
+        
+    } for
+    
+    % Last box (frontmost)
+    boxesTranslationOffset boxesCurrentItem 1 add mul 1 sub boxesCurrentColor 0 0 boxesSize box
+        
+    grestore
+    
+} def
+
+%===============================================================================
+% Creates a 3D text
+%  
+% Stack:
+%   1)  String  The text to display
+%   2)  Number  The Y position (translation)
+%   3)  Number  The X position (translation)
+%===============================================================================
+/3dText {
+    
+    gsave
+    
+    % Store the text to display
+    /3dTextString exch def
+    
+    % Store the X and Y coordinates for the translation
+    /3dTextYtranslate exch def
+    /3dTextXtranslate exch def
+    
+    % Procedure to write the text
+    /print3dText { 0 0 moveto 3dTextString show } def
+    
+    % Move origin axes
+    3dTextXtranslate 15 add 3dTextYtranslate translate
+    
+    % Iterations for the text loop
+    /3dTextIterationStart 0.95 def
+    /3dTextIterationAdd 0.01 neg def
+    
+    % Loop from 0.95% white to pure black, decreasing white by 0.05
+    3dTextIterationStart 3dTextIterationAdd 0 {
+        
+        % Current item
+        /3dTextCurrentItem exch def
+        
+        % Check if an item has already been processed
+        3dTextCurrentItem 3dTextIterationStart eq {
+            
+            % Define translation values
+            /3dTextXtranslation 0.2 def
+            /3dTextYtranslation 0.1 def
+            
+        } {
+            
+            % Increase translation values
+            /3dTextXtranslation 3dTextXtranslation 0.2 add def
+            /3dTextYtranslation 3dTextYtranslation 0.1 add def
+            
+        } ifelse
+        
+        % Set color and write text
+        3dTextCurrentItem setgray
+        print3dText
+        
+        % Translate to a new position
+        0.2 neg 0.1 translate
+        
+    } for
+    
+    % Place a white string at top of the others
+    1 setgray print3dText
+    
+    grestore
+    
+} def
+
+%===============================================================================
+% Creates wedges
+%  
+% Stack:
+%   1)  Number  The width of the wedges
+%   2)  Number  The Y scale factor
+%   3)  Number  The X scale factor
+%   4)  Number  The Y position
+%   5)  Number  The X position
+%===============================================================================
+/wedges {
+    
+    % Width of the wedges
+    /wedgesWidth exch def
+    
+    % Scale factor
+    /wedgesYscaleFactor exch def
+    /wedgesXscaleFactor exch def
+    
+    % X and Y position
+    /wedgesYpos exch def
+    /wedgesXpos exch def
+    /wedgesYpos wedgesYpos wedgesYscaleFactor add def
+    /wedgesXpos wedgesXpos wedgesXscaleFactor add def
+    
+    % Single wedge creation
+    /wedge {
+        
+        % Create new path
+        newpath
+        
+        % Position
+        0 0 moveto
+        1 0 translate
+        
+        % Rotation
+        15 rotate
+        
+        % Create arc
+        0 wedgesWidth sin translate
+        0 0 wedgesWidth sin -90 90 arc
+        
+        % Close the path
+        closepath
+        
+    } def
+    
+    gsave
+    
+    % Move to initial position
+    wedgesXpos wedgesYpos translate
+    
+    % Apply scale factor
+    wedgesXscaleFactor wedgesYscaleFactor scale
+    
+    % Set line width
+    0.02 setlinewidth
+    
+    % Create wedges
+    1 1 12 {
+        
+        % Color
+        12 div setgray
+        
+        % Create wedge
+        gsave
+        wedge
+        gsave fill grestore
+        0 setgray stroke
+        grestore
+        
+        % Rotation
+        30 rotate
+        
+    } for
+    
+    grestore
+    
+} def
+
+/centerTitle {
+    
+    gsave
+    
+    /Helvetica findfont 30 scalefont setfont
+
+    /theString exch def
+    
+    /pageHeight 841.9 def
+    /pageWidth 595.3 def
+    
+    pageWidth 2 div pageHeight 2 div moveto
+    theString dup stringwidth pop 2 div neg 0 rmoveto show
+    showpage
+    
+    grestore
+    
+} def
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 2) INSTRUCTIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Set font options
+/Helvetica findfont 50 scalefont setfont
+
+(PostScript Exercices) centerTitle
+
+% Writes a 3D text
+0.5 inch 10 inch (Drawing Examples) 3dText
+
+
+% Some text
+/Helvetica findfont 20 scalefont setfont
+0.5 inch 9.7 inch moveto
+(\(by macmade\)) show
+0 0 moveto
+
+% Creates 15 boxes sets
+1 inch 1 inch 1 1 700 1 inch boxes
+2.5 inch 1 inch 2 2 300 1 inch boxes
+4 inch 1 inch 3 3 200 1 inch boxes
+5.5 inch 1 inch 4 4 100 1 inch boxes
+7 inch 1 inch 5 5 75 1 inch boxes
+8.5 inch 1 inch 6 6 50 1 inch boxes
+
+% Display wedges
+0.5 inch 7.5 inch 0.5 inch 0.5 inch 5 wedges
+0.5 inch 6 inch 0.5 inch 0.5 inch 15 wedges
+0.5 inch 4.5 inch 0.5 inch 0.5 inch 30 wedges
+
+% New string
+/dictString (Dict: GLOBAL) def
+
+% Set font
+/Helvetica findfont 10 scalefont setfont
+
+% Output the string
+5 inch 9 inch moveto
+dictString show
+
+% Create a new dictionnary
+/myDict 1 dict def
+
+% Start using the dictionnary
+myDict begin
+    
+    % Output the string
+    5 inch 8.8 inch moveto
+    dictString show
+    
+    % Redefine the string variable
+    /dictString (Dict: LOCAL) def
+    
+    % Output the string
+    5 inch 8.6 inch moveto
+    dictString show
+    
+end
+
+% Output the string
+5 inch 8.4 inch moveto
+dictString show
+
+% Origin mark
+0 0 moveto (+) show
+15 2 moveto
+/Helvetica findfont 10 scalefont setfont (\(origin mark\)) show
+
+% Outputs the first page
+showpage
+
+(Encoding Tests) centerTitle
+
+% Default (standard) font
+/defaultFont /Helvetica findfont 10 scalefont def
+
+% Encode Helvetica as ISO Latin 1
+/Helvetica /Helvetica-ISO ISOLatin1Encoding reEncodeFont
+
+% Define encoded font
+/encodedFont /Helvetica-ISO findfont 10 scalefont def
+
+% New dictionnary for custom font
+/customFontDict 256 array def
+
+% Fill dictionnary with undefined glyph
+0 1 255 { customFontDict exch /.notdef put } for
+
+% Fill custom dictionnary with glyph names
+customFontDict
+
+dup 8#0 /uni0501 put          dup 8#1 /dollar put     dup 8#2 /dollar put     dup 8#3 /dollar put
+dup 8#4 /dollar put     dup 8#5 /dollar put     dup 8#6 /dollar put     dup 8#7 /dollar put
+
+dup 8#10 /dollar put    dup 8#11 /dollar put    dup 8#12 /dollar put    dup 8#13 /dollar put
+dup 8#14 /dollar put    dup 8#15 /dollar put    dup 8#16 /dollar put    dup 8#17 /dollar put
+
+dup 8#20 /dollar put    dup 8#21 /dollar put    dup 8#22 /dollar put    dup 8#23 /dollar put
+dup 8#24 /dollar put    dup 8#25 /dollar put    dup 8#26 /dollar put    dup 8#27 /dollar put
+
+dup 8#30 /dollar put    dup 8#31 /dollar put    dup 8#32 /dollar put    dup 8#33 /dollar put
+dup 8#34 /dollar put    dup 8#35 /dollar put    dup 8#36 /dollar put    dup 8#37 /dollar put
+
+dup 8#40 /dollar put    dup 8#41 /dollar put    dup 8#42 /dollar put    dup 8#43 /dollar put
+dup 8#44 /dollar put    dup 8#45 /dollar put    dup 8#46 /dollar put    dup 8#47 /dollar put
+
+dup 8#50 /dollar put    dup 8#51 /dollar put    dup 8#52 /dollar put    dup 8#53 /dollar put
+dup 8#54 /dollar put    dup 8#55 /dollar put    dup 8#56 /dollar put    dup 8#57 /dollar put
+
+dup 8#60 /dollar put    dup 8#61 /dollar put    dup 8#62 /dollar put    dup 8#63 /dollar put
+dup 8#64 /dollar put    dup 8#65 /dollar put    dup 8#66 /dollar put    dup 8#67 /dollar put
+
+dup 8#70 /dollar put    dup 8#71 /dollar put    dup 8#72 /dollar put    dup 8#73 /dollar put
+dup 8#74 /dollar put    dup 8#75 /dollar put    dup 8#76 /dollar put    dup 8#77 /dollar put
+
+dup 8#100 /dollar put   dup 8#101 /dollar put   dup 8#102 /dollar put   dup 8#103 /dollar put
+dup 8#104 /dollar put   dup 8#105 /dollar put   dup 8#106 /dollar put   dup 8#107 /dollar put
+
+dup 8#110 /dollar put   dup 8#111 /dollar put   dup 8#112 /dollar put   dup 8#113 /dollar put
+dup 8#114 /dollar put   dup 8#115 /dollar put   dup 8#116 /dollar put   dup 8#117 /dollar put
+
+dup 8#120 /dollar put   dup 8#121 /dollar put   dup 8#122 /dollar put   dup 8#123 /dollar put
+dup 8#124 /dollar put   dup 8#125 /dollar put   dup 8#126 /dollar put   dup 8#127 /dollar put
+
+dup 8#130 /dollar put   dup 8#131 /dollar put   dup 8#132 /dollar put   dup 8#133 /dollar put
+dup 8#134 /dollar put   dup 8#135 /dollar put   dup 8#136 /dollar put   dup 8#137 /dollar put
+
+dup 8#140 /dollar put   dup 8#141 /dollar put   dup 8#142 /dollar put   dup 8#143 /dollar put
+dup 8#144 /dollar put   dup 8#145 /dollar put   dup 8#146 /dollar put   dup 8#147 /dollar put
+
+dup 8#150 /dollar put   dup 8#151 /dollar put   dup 8#152 /dollar put   dup 8#153 /dollar put
+dup 8#154 /dollar put   dup 8#155 /dollar put   dup 8#156 /dollar put   dup 8#157 /dollar put
+
+dup 8#160 /dollar put   dup 8#161 /dollar put   dup 8#162 /dollar put   dup 8#163 /dollar put
+dup 8#164 /dollar put   dup 8#165 /dollar put   dup 8#166 /dollar put   dup 8#167 /dollar put
+
+dup 8#170 /dollar put   dup 8#171 /dollar put   dup 8#172 /dollar put   dup 8#173 /dollar put
+dup 8#174 /dollar put   dup 8#175 /dollar put   dup 8#176 /dollar put   dup 8#177 /dollar put
+
+dup 8#200 /dollar put   dup 8#201 /dollar put   dup 8#202 /dollar put   dup 8#203 /dollar put
+dup 8#204 /dollar put   dup 8#205 /dollar put   dup 8#206 /dollar put   dup 8#207 /dollar put
+
+dup 8#210 /dollar put   dup 8#211 /dollar put   dup 8#212 /dollar put   dup 8#213 /dollar put
+dup 8#214 /dollar put   dup 8#215 /dollar put   dup 8#216 /dollar put   dup 8#217 /dollar put
+
+dup 8#220 /dollar put   dup 8#221 /dollar put   dup 8#222 /dollar put   dup 8#223 /dollar put
+dup 8#224 /dollar put   dup 8#225 /dollar put   dup 8#226 /dollar put   dup 8#227 /dollar put
+
+dup 8#230 /dollar put   dup 8#231 /dollar put   dup 8#232 /dollar put   dup 8#233 /dollar put
+dup 8#234 /dollar put   dup 8#235 /dollar put   dup 8#236 /dollar put   dup 8#237 /dollar put
+
+dup 8#240 /dollar put   dup 8#241 /dollar put   dup 8#242 /dollar put   dup 8#243 /dollar put
+dup 8#244 /dollar put   dup 8#245 /dollar put   dup 8#246 /dollar put   dup 8#247 /dollar put
+
+dup 8#250 /dollar put   dup 8#251 /dollar put   dup 8#252 /dollar put   dup 8#253 /dollar put
+dup 8#254 /dollar put   dup 8#255 /dollar put   dup 8#256 /dollar put   dup 8#257 /dollar put
+
+dup 8#260 /dollar put   dup 8#261 /dollar put   dup 8#262 /dollar put   dup 8#263 /dollar put
+dup 8#264 /dollar put   dup 8#265 /dollar put   dup 8#266 /dollar put   dup 8#267 /dollar put
+
+dup 8#270 /dollar put   dup 8#271 /dollar put   dup 8#272 /dollar put   dup 8#273 /dollar put
+dup 8#274 /dollar put   dup 8#275 /dollar put   dup 8#276 /dollar put   dup 8#277 /dollar put
+
+dup 8#300 /dollar put   dup 8#301 /dollar put   dup 8#302 /dollar put   dup 8#303 /dollar put
+dup 8#304 /dollar put   dup 8#305 /dollar put   dup 8#306 /dollar put   dup 8#307 /dollar put
+
+dup 8#310 /dollar put   dup 8#311 /dollar put   dup 8#312 /dollar put   dup 8#313 /dollar put
+dup 8#314 /dollar put   dup 8#315 /dollar put   dup 8#316 /dollar put   dup 8#317 /dollar put
+
+dup 8#320 /dollar put   dup 8#321 /dollar put   dup 8#322 /dollar put   dup 8#323 /dollar put
+dup 8#324 /dollar put   dup 8#325 /dollar put   dup 8#326 /dollar put   dup 8#327 /dollar put
+
+dup 8#330 /dollar put   dup 8#331 /dollar put   dup 8#332 /dollar put   dup 8#333 /dollar put
+dup 8#334 /dollar put   dup 8#335 /dollar put   dup 8#336 /dollar put   dup 8#337 /dollar put
+
+dup 8#340 /dollar put   dup 8#341 /dollar put   dup 8#342 /dollar put   dup 8#343 /dollar put
+dup 8#344 /dollar put   dup 8#345 /dollar put   dup 8#346 /dollar put   dup 8#347 /dollar put
+
+dup 8#350 /dollar put   dup 8#351 /dollar put   dup 8#352 /dollar put   dup 8#353 /dollar put
+dup 8#354 /dollar put   dup 8#355 /dollar put   dup 8#356 /dollar put   dup 8#357 /dollar put
+
+dup 8#360 /dollar put   dup 8#361 /dollar put   dup 8#362 /dollar put   dup 8#363 /dollar put
+dup 8#364 /dollar put   dup 8#365 /dollar put   dup 8#366 /dollar put   dup 8#367 /dollar put
+
+dup 8#370 /dollar put   dup 8#371 /dollar put   dup 8#372 /dollar put   dup 8#373 /dollar put
+dup 8#374 /dollar put   dup 8#375 /dollar put   dup 8#376 /dollar put   dup 8#377 /dollar put
+
+pop
+
+% Encode Helvetica with custom dictionnary
+/Helvetica /Helvetica-Custom customFontDict reEncodeFont
+
+% Define custom font
+/customFont /Helvetica-Custom findfont 10 scalefont def
+
+% Use the default font
+defaultFont setfont
+
+% Prepare four columns
+0 1 3 {
+    
+    % Store counter variable
+    /counter exch def
+    
+    % Position for column headers
+    30 counter 140 mul add 750 moveto
+    
+    % Write column headers
+    (Octal Standard Latin1 Custom) show
+    
+    % Columns separations
+    counter 3 lt {
+        
+        gsave
+        
+        newpath
+        165 counter 140 mul add 1 inch moveto
+        0 735 1 inch sub rlineto
+        stroke
+        
+        grestore
+        
+    } if
+
+} for
+
+% Trace header separation line
+newpath
+10 735 moveto
+595 0 rlineto
+stroke
+
+% Containers for octal number and character display
+/showString 1 string def
+/counterString 3 string def
+
+% Start positions for characters
+/yLine 710 def
+/xStart 40 def
+
+% Spacing values for columns
+/columnsSpace 35 def
+/columsGroupSpace 140 def
+
+% Process all of the 256 characters
+0 1 255 {
+    
+    % Store current character number
+    /counter exch def
+    
+    % Get the current character
+    /charString showString dup 0 counter put def
+    
+    % USe the default font
+    defaultFont setfont xStart yLine moveto
+    
+    % Show the octal value for the character
+    counter 8 counterString cvrs show
+    
+    % Move to new insertion point
+    xStart columnsSpace add yLine moveto
+    
+    % Show character in the default font
+    charString show
+    
+    % Show character in the encoded font
+    encodedFont setfont xStart columnsSpace 2 mul add yLine moveto
+    charString show
+    
+    % Show character in the custom font
+    customFont setfont xStart columnsSpace 3 mul add yLine moveto
+    charString show
+    
+    % Redefine the Y position for the next character
+    /yLine yLine 10 sub def
+    
+    % Check if the end of the column has been reached
+    counter 1 add 64 mod 0 eq {
+        
+        % Reset the X and Y position for the new column
+        /xStart xStart columsGroupSpace add def
+        /yLine 710 def
+        
+    } if
+    
+} for
+
+% Outputs the second page
+showpage
+
+(Helvetica Standard Encoding) centerTitle
+
+% Starting positions
+/pageTop 10.5 inch def
+/yPos pageTop def
+/xPos 0.5 inch def
+
+% Position to page top
+xPos yPos moveto
+
+% Set font
+/Helvetica findfont 10 scalefont setfont
+
+% Copy Helvetica dictionnary
+/dictionnary /Helvetica findfont def
+
+/showString 1 string def
+
+% Process each entry of the Helvetica dictionnary
+dictionnary {
+    
+    % Enconding array
+    exch dup /Encoding eq {
+        
+        % Set counter
+        /counter 0 def
+        
+        % Process each entry in the encoding array
+        exch {
+            
+            % Increase counter
+            /counter counter 1 add def
+            
+            counter 1 gt {
+                    
+                /charString showString dup 0 counter 2 sub put def
+            
+                % Show counter and current value
+                counter 2 sub 10000 string cvs show
+                (: ) show
+                xPos 25 add yPos moveto
+                charString show
+                xPos 40 add yPos moveto
+                exch 10000 string cvs show
+                
+                % Check Y position
+                yPos 0.5 inch lt {
+                    
+                    % Move to next column
+                    /xPos xPos 2 inch add def
+                    /yPos pageTop def
+                    
+                } {
+                    
+                    % New Y position
+                    /yPos yPos 10 sub def
+                    
+                } ifelse
+                
+                % Move position
+                xPos yPos moveto
+                
+            } if
+            
+        } forall
+        
+    } if
+    
+} forall
+
+% Outputs the third page
+showpage
+
+(Helvetica Glyphs) centerTitle
+
+% Starting positions
+/pageTop 10.5 inch def
+/yPos pageTop def
+/xPos 0.5 inch def
+
+% Position to page top
+xPos yPos moveto
+
+% Set font
+/Helvetica findfont 10 scalefont setfont
+
+% Copy Helvetica dictionnary
+/dictionnary /Helvetica findfont def
+
+% Number of columns
+/columns 0 def
+
+% Process each entry of the Helvetica dictionnary
+dictionnary {
+    
+    % Enconding array
+    exch dup /CharStrings eq {
+        
+        % Set counter
+        /counter 0 def
+        
+        % Process each entry in the encoding array
+        exch {
+            
+            % Increase counter
+            /counter counter 1 add def
+            
+            % Show counter and current value
+            counter 10000 string cvs show
+            (: ) show
+            xPos 35 add yPos moveto
+            exch 10000 string cvs show
+            
+            
+            % Check Y position
+            yPos 0.5 inch lt {
+                
+                % Move to next column
+                /xPos xPos 2.5 inch add def
+                /yPos pageTop def
+                /columns columns 1 add def
+                
+                columns 3 eq {
+                    
+                    /columns 0 def
+                    /xPos 0.5 inch def
+                    /yPos pageTop def
+                    showpage
+                    
+                } if
+                
+            } {
+                
+                % New Y position
+                /yPos yPos 10 sub def
+                
+            } ifelse
+            
+            % Move position
+            xPos yPos moveto
+            
+        } forall
+        
+    } if
+    
+} forall
+
+% Outputs the third page
+showpage

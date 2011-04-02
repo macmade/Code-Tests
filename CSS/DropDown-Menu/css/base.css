@@ -1,0 +1,241 @@
+/* <![CDATA[ */
+
+/* $Id: base.css 57 2009-01-30 05:52:42Z macmade $ */
+
+BODY {
+    margin:             0px;
+    color:              #333333;
+    font-style:         normal;
+    font-weight:        normal;
+    font-size:          14px;
+    line-height:        normal;
+    text-decoration:    none;
+    font-family:        Arial, Helvetica, Verdana, Geneva, Swiss, SunSans-Regular, sans-serif;
+    background-color:   #F5F5F5;
+}
+
+TD, LI {
+    color:              #333333;
+    font-style:         normal;
+    font-weight:        normal;
+    font-size:          14px;
+    line-height:        normal;
+    text-decoration:    none;
+    font-family:        Arial, Helvetica, Verdana, Geneva, Swiss, SunSans-Regular, sans-serif;
+    background-color:   inherit;
+}
+
+H1 {
+    color:              #333333;
+    font-style:         normal;
+    font-weight:        normal;
+    font-size:          32px;
+    line-height:        normal;
+    margin-top:         14px;
+    margin-bottom:      14px;
+    background-color:   inherit;
+}
+
+H2 {
+    color:              #333333;
+    font-style:         normal;
+    font-weight:        normal;
+    font-size:          26px;
+    line-height:        normal;
+    margin-top:         14px;
+    margin-bottom:      14px;
+    background-color:   inherit;
+    border-bottom:      solid 1px #CCCCCC;
+    padding-bottom:     5px;
+}
+
+H3 {
+    color:              #333333;
+    font-style:         normal;
+    font-weight:        normal;
+    font-size:          20px;
+    line-height:        normal;
+    margin-top:         14px;
+    margin-bottom:      14px;
+    background-color:   inherit;
+    border-bottom:      solid 1px #CCCCCC;
+    padding-bottom:     5px;
+}
+
+A {
+    text-decoration:    none;
+}
+
+A:link {
+    color:              #00559A;
+    text-decoration:    none;
+    background-color:   inherit;
+}
+
+A:visited {
+    color:              #91A8BE;
+    background-color:   inherit;
+}
+
+A:hover {
+    color:              #BB1D22;
+    text-decoration:    underline;
+    background-color:   inherit;
+}
+
+A:active {
+    color:              #BB1D22;
+    text-decoration:    underline;
+    background-color:   inherit;
+}
+
+IMG {
+    border:             none;
+}
+
+TABLE {
+    border:             solid 1px #CCCCCC;
+    border-collapse:    collapse;
+    width:              100%;
+    margin-top:         14px;
+    margin-bottom:      14px;
+}
+
+TD {
+    border:             solid 1px #CCCCCC;
+    padding:            5px;
+    text-align:         center;
+}
+
+TH {
+    border:             solid 1px #CCCCCC;
+    padding:            5px;
+    background-color:   #F1F8FF;
+    color:              inherit;
+    text-align:         center;
+}
+
+CODE {
+    color: #666666;
+}
+
+CODE.source {
+    white-space:        pre;
+    color:              #333333;
+    background-color:   inherit;
+    
+}
+
+.code-comment {
+    color:              #7F7F7F;
+    background-color:   inherit;
+}
+
+.code-keyword {
+    color:              #007FFF;
+    background-color:   inherit;
+}
+
+.code-predefined {
+    color:              #00327F;
+    background-color:   inherit;
+}
+
+.code-string {
+    color:              #FF7F7F;
+    background-color:   inherit;
+}
+.code-ctag {
+    color:              #7F007F;
+    background-color:   inherit;
+}
+
+#page {
+    margin:             25px;
+    width:              850px;
+    border:             solid 1px #CCCCCC;
+    background-color:   #FFFFFF;
+}
+
+#header {
+    height:             100%;
+    overflow:           hidden;
+}
+
+#header .left {
+    float:              left;
+}
+
+#header .right {
+    float:              right;
+}
+
+#header .header-box-blue {
+    padding:            15px;
+    color:              #FFFFFF;
+    background-color:   #00559A;
+}
+
+#header .left .header-box-blue {
+    border-right:       solid 1px #CCCCCC;
+    border-bottom:      solid 1px #CCCCCC;
+}
+
+#header .right .header-box-blue {
+    border-left:       solid 1px #CCCCCC;
+    border-bottom:      solid 1px #CCCCCC;
+}
+
+#header .header-box {
+    padding:            15px;
+}
+
+#footer {
+    height:             100%;
+    overflow:           hidden;
+    font-size:          10px;
+    margin:             15px;
+}
+
+#footer .left {
+    float:              left;
+}
+
+#footer .right {
+    float:              right;
+}
+
+#content {
+    padding:             25px;
+}
+
+#content DIV {
+    margin-bottom:      10px;
+}
+
+TD.alt {
+    background-color:   #F5F5F5;
+}
+
+DIV.code {
+    border:             solid 1px #CCCCCC;
+    padding:            5px;
+    background-color:   #F5F5F5;
+}
+
+DIV.code-small {
+    border:             solid 1px #CCCCCC;
+    padding:            5px;
+    background-color:   #F5F5F5;
+    font-size:          10px;
+}
+
+.center {
+    text-align:         center;
+}
+
+.power {
+    vertical-align:     super;
+}
+
+/* ]]> */

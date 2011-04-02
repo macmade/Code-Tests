@@ -1,0 +1,157 @@
+%!PS
+
+% $Id: CheckBox.ps 57 2009-01-30 05:52:42Z macmade $
+
+%% Title:   PostScript examples
+%% Author:  Jean-David Gadina <info@macmade.net>
+%% Date:    2 May 2007
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 1) PROCEDURES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%===============================================================================
+% Converts a number in inches to points
+%  
+% Stack:
+%   1)  Number  The number of inches
+%===============================================================================
+/inch {
+    
+    72 mul
+    
+} def
+
+%===============================================================================
+% Converts a number in centimeters to points
+%  
+% Stack:
+%   1)  Number  The number of centimeters
+%===============================================================================
+/cm {
+    
+    0.39370079 mul inch
+    
+} def
+
+%===============================================================================
+% Converts a number in millimeters to points
+%  
+% Stack:
+%   1)  Number  The number of millimeters
+%===============================================================================
+/mm {
+    
+    0.039370079 mul inch
+    
+} def
+
+%===============================================================================
+% Change a font's encoding
+%  
+% Stack:
+%   1)  The new encoding
+%   2)  The new font
+%   3)  The base font
+%===============================================================================
+/reEncodeFont {
+    
+    % Re-encode dictionnary
+    /reEncodeDict 5 dict def
+
+    % Start using re-encode dictionnary
+    reEncodeDict begin
+    
+    % Store stack variables
+    /newEncoding exch def
+    /newFontName exch def
+    /baseFontName exch def
+    
+    % Store the base font's dictionnary
+    /baseFontDict baseFontName findfont def
+    
+    % Create a copy of the base font directory for the new one
+    /newFont baseFontDict maxlength dict def
+    
+    % Process each entry of the base font directory
+    baseFontDict {
+        
+        % Detect font ID and encoding fields
+        exch dup /FID ne dup /Encoding ne and {
+            
+            % Put entry in the new font
+            exch newFont 3 1 roll put
+            
+        } {
+            
+            % Remove fields from the stack
+            pop pop
+            
+        } ifelse
+        
+    } forall
+    
+    % Install the new name and new encoding in the new font
+    newFont /FontName newFontName put
+    newFont /Encoding newEncoding put
+    
+    % Define the new font
+    newFontName newFont definefont pop
+    
+    end
+    
+} def
+
+/checkBox {
+    
+    gsave
+    
+    /checked exch def
+    /checkBoxSize exch def
+    /checkBoxString exch def
+    /yPos exch def
+    /xPos exch def
+    
+    xPos yPos translate
+        
+    newpath
+    0 0 moveto
+    checkBoxSize 0 rlineto
+    0 checkBoxSize rlineto
+    checkBoxSize neg 0 rlineto
+    closepath
+    stroke
+    
+    checked 1 eq {
+        
+        newpath
+        0 0 moveto
+        checkBoxSize checkBoxSize rlineto
+        stroke
+        
+        newpath
+        0 checkBoxSize moveto
+        checkBoxSize checkBoxSize neg rlineto
+        stroke
+        
+    } if
+    
+    checkBoxSize 10 add 0 moveto
+    /Helvetica findfont checkBoxSize scalefont setfont
+    checkBoxString show
+    
+    grestore
+    
+} def
+
+1 inch 2 inch (This is a checkbox) 50 1 checkBox
+1 inch 1.8 inch (This is another checkbox) 10 0 checkBox
+1 inch 1.6 inch (This is another checkbox) 10 1 checkBox
+1 inch 1.4 inch (This is another checkbox) 10 1 checkBox
+1 inch 1.2 inch (This is another checkbox) 10 0 checkBox
+1 inch 1 inch (This is another checkbox) 10 0 checkBox
+
+1 inch 4 inch () 450 1 checkBox
+
+% Outputs the page
+showpage

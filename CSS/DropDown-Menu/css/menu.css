@@ -1,0 +1,155 @@
+/* <![CDATA[ */
+
+/* $Id: menu.css 57 2009-01-30 05:52:42Z macmade $ */
+
+/***************************************************************
+ * ROOTLINE
+ *
+ * Original code by Aleksandar Vacic (www.aplus.co.yu)
+ * 
+ * Some rights reserved:
+ * http://creativecommons.org/licenses/by/2.0/
+ ***************************************************************/
+
+/**
+ * Base elements
+ */
+DIV#rootline {
+    display: block;
+    text-align: left;
+}
+DIV#rootline UL {
+    margin: 0px;
+    padding: 0px;
+    border: none;
+    list-style-type: none;
+}
+DIV#rootline LI {
+    margin: 0px;
+    padding: 0px;
+    border: none;
+    display: block;
+    float: left;
+    position: relative;
+}
+DIV#rootline A {
+    display: block;
+}
+DIV#rootline LI LI {
+    width: 100%;
+}
+
+/**
+ * Third level positionning
+ */
+DIV#rootline LI LI UL {
+    top: 0px;
+    left: 0px;
+}
+DIV#rootline LI LI:hover UL {
+    left: 100%;
+}
+
+/**
+ * Submenus display
+ */
+DIV#rootline LI UL {
+    display: none;
+    position: absolute;
+    z-index: 10;
+}
+DIV#rootline LI:hover>UL {
+    display: block;
+}
+
+/**
+ * Force containment of floated list items inside of main list
+ */
+UL#rootlineFirstLevel:after {
+    content: ".";
+    height: 0px;
+    display: block;
+    visibility: hidden;
+    overflow: hidden;
+    clear: both;
+}
+
+/**
+ * Exporer 5 Mac fix
+ \*//*/
+#rootline a {
+    float: left;
+}
+
+/**
+ * Visual formatting
+ */
+DIV#rootline {
+    font-size: 10px;
+    color: #FFFFFF;
+    background-color: #E5E5E5;
+    background-repeat: repeat-x;
+    border: solid 1px #646464;
+    background-image: url('pictures/menu_bg.gif');
+    height: 25px;
+    margin-top: 25px;
+}
+DIV#rootline LI {
+    text-align: left;
+}
+DIV#rootline A {
+    font-size: 10px;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 6px;
+}
+DIV#rootline>UL>LI>UL {
+    padding-left: 6px;
+}
+DIV#rootline>UL>LI {
+    background-image: url('pictures/level1_separator.gif');
+    background-repeat: no-repeat;
+    background-color: transparent;
+    background-position: 100%;
+    padding-right: 10px;
+}
+DIV#rootline LI>A:before {
+    content: url('pictures/page.gif');
+    margin-right: 2px;
+    vertical-align: middle;
+}
+DIV#rootline LI>A:hover:before {
+    content: url('pictures/page_over.gif');
+}
+DIV#rootline LI.container>A:before {
+    content: url('pictures/folder.gif');
+    margin-right: 2px;
+    vertical-align: middle;
+}
+DIV#rootline LI.container>A:hover:before {
+    content: url('pictures/folder_over.gif');
+}
+DIV#rootline LI.container>A:after {
+    content: url('pictures/right.gif');
+    margin-left: 2px;
+    vertical-align: middle;
+}
+DIV#rootline>UL>LI.container>A:after {
+    content: url('pictures/down.gif');
+    margin-left: 2px;
+    vertical-align: middle;
+}
+DIV#rootline UL UL {
+    width: 100px;
+    margin-top: -1px;
+}
+DIV#rootline UL UL LI {
+    color: #4B4F53;
+    border: solid 1px #646464;
+    background-color: #FFFFFF;
+    margin-bottom: 2px;
+}
+DIV#rootline UL UL UL LI {
+    margin-left: 3px;
+}
+/* ]]> */
