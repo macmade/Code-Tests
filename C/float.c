@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, Jean-David Gadina <macmade@eosgarden.com>
+ * Copyright (c) 2010, Jean-David Gadina - www.xs-labs.com
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
 
+/* $Id$ */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -48,7 +50,7 @@
                 http://ieeexplore.ieee.org/servlet/opac?punumber=4610933
  * @param       binary  The integer to convert to a floating point value
  * @result      The floating point number
- * @copyright   eosgarden 2010 - Jean-David Gadina <macmade@eosgarden.com>
+ * @copyright   Jean-David Gadina - www.xs-labs.com
  */
 float binary_to_float( unsigned long binary );
 float binary_to_float( unsigned long binary )

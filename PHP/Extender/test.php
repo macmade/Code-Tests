@@ -1,6 +1,6 @@
 <?php
 
-# $Id: test.php 57 2009-01-30 05:52:42Z macmade $
+# $Id$
 
 require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'ClassExtender.class.php' );
 require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'A1.class.php' );

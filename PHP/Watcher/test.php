@@ -1,6 +1,6 @@
 <?php
 
-# $Id: test.php 57 2009-01-30 05:52:42Z macmade $
+# $Id$
 
 require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Watcher.class.php' );
 require_once( 'Foo.class.php' );

@@ -1,6 +1,6 @@
 <?php
 
-# $Id: Bar.class.php 57 2009-01-30 05:52:42Z macmade $
+# $Id$
 
 class Bar
 {

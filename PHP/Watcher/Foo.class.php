@@ -1,6 +1,6 @@
 <?php
 
-# $Id: Foo.class.php 57 2009-01-30 05:52:42Z macmade $
+# $Id$
 
 class Foo extends Watcher
 {

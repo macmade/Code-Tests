@@ -1,6 +1,6 @@
 <?php
 
-# $Id: A2Extender.class.php 57 2009-01-30 05:52:42Z macmade $
+# $Id$
 
 class A2Extender extends A2
 {
